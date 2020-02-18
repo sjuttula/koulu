@@ -1,0 +1,67 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+#määritellään muuttujien arvot
+T = 298
+R = 8.3144621
+m1 = 0.028
+m2 = 0.004
+
+#määritellään funktiot
+gaussian1 = lambda x: 4*np.pi*(m1/(2*np.pi*R*T))**(3/2)*(x**2)*np.e**((-m1*(x**2))/(2*R*T))
+gaussian2 = lambda x: 4*np.pi*(m2/(2*np.pi*R*T))**(3/2)*(x**2)*np.e**((-m2*(x**2))/(2*R*T))
+
+#varmistin, että funktioiden arvot suurimmillaan kohdassa 1000
+#print('Funktion 1 arvo kohdassa 1000:',gaussian1(1000))
+#print('Funktion 1 arvo kohdassa 1300:',gaussian1(1300))
+#print('Funktion 2 arvo kohdassa 1000:',gaussian2(1000))
+#print('Funktion 2 arvo kohdassa 1300:',gaussian2(1300))
+
+A1_tot = 300*gaussian1(1000)
+A2_tot = 300*gaussian2(1000)
+
+#luodaan lista x-arvoista välillä 1000-1300 
+x_list = np.arange(1000,1300,0.01).tolist()
+#print(len(x_list))
+
+y1_list = []
+y2_list = []
+
+#luodaan listat y-arvoista
+for x in x_list:
+    y1_list.append(gaussian1(x))
+    y2_list.append(gaussian2(x))
+
+#print(y1_list)
+#print(y2_list)
+
+#luodaan randomisoitu lista, tässä huom lukujen arvot välillä 0-1
+n = len(x_list)
+rand_list1 = np.random.rand(n)
+rand_list2 = np.random.rand(n)
+#skaalataan lista funktioiden max-arvoilla
+rand_list1 *= gaussian1(1000)
+rand_list2 *= gaussian2(1000)
+
+#käydään listat läpi ja lasketaan osumat
+i = 0
+hits1 = 0
+hits2 = 0
+while i < n:
+    if rand_list1[i] < y1_list[i]:
+        hits1 += 1
+    if rand_list2[i] < y2_list[i]:
+        hits2 += 1
+    i += 1
+
+#lasketaan todennäköisyyksien avulla integraalit
+print('Integraali typelle on:',A1_tot*(hits1/n))
+print('Integraali heliumille on:',A2_tot*(hits2/n))
+
+#printataan plotti typen jakaumasta
+#plt.scatter(x_list, rand_list1, c='black',s=0.1) #random pisteet
+#plt.plot(x_list, y1_list, 'b-', linewidth = 2) #suora
+#plt.ylim(0,0.00011)
+#plt.ylabel('osuus molekyyleistä')
+#plt.xlabel('nopeus (m/s)')
+#plt.show()
